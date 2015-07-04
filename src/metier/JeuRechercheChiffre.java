@@ -1,5 +1,6 @@
 package metier;
 
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -10,23 +11,33 @@ public class JeuRechercheChiffre  {
 
 	private static int chiffre;
 	private static byte nbreJoueurs;
+	private static boolean gain = false;
 	
 	public JeuRechercheChiffre() throws RuntimeException{
 		while(true){
-			try {
-				nbreJoueurs = setNbreJoueurs();
-				break;
-			} catch (NbreJoueursException ex) {
-				System.out.println("Erreur nbre de joueurs");
-			} catch (RuntimeException ex) {
-				System.out.println("autre erreur : " + ex.getMessage());
-				RuntimeException runtimeEx = new RuntimeException();
-				throw runtimeEx;
+			while(true){
+				try {
+					nbreJoueurs = setNbreJoueurs();
+					break;
+				} catch (NbreJoueursException ex) {
+					System.out.println("Erreur nbre de joueurs");
+				} catch (RuntimeException ex) {
+					System.out.println("autre erreur : " + ex.getMessage());
+					RuntimeException runtimeEx = new RuntimeException();
+					throw runtimeEx;
+				}
+			}
+			chiffre = setChiffreRandom();
+//			System.out.println("nbreJoueurs : " + nbreJoueurs + ", chiffre : " + chiffre);
+			startGame(nbreJoueurs, chiffre);
+			System.out.println("Souhaitez-vous rejouer ? o / n");
+			Scanner reader = new Scanner(System.in);
+			String strRejouer = reader.nextLine().toUpperCase();
+			if(strRejouer.equals("N")){
+				System.out.println("Au-revoir !");
+				System.exit(0);
 			}
 		}
-		chiffre = setChiffreRandom();
-//		System.out.println("nbreJoueurs : " + nbreJoueurs + ", chiffre : " + chiffre);
-		startGame(nbreJoueurs, chiffre);
 	}
 	
 	private static byte setNbreJoueurs() throws NbreJoueursException{
@@ -83,10 +94,15 @@ public class JeuRechercheChiffre  {
 							+ "Bravo ! le joueur " + joueur + " gagne la partie !"
 									+ "\n*******************************************************"
 									+ "\n\tFIN DE LA PARTIE");
-					System.exit(0);
+					gain = true;
+					break;
 				} else {
 					System.out.println("votre proposition est " + reponse + " au chiffre à trouver !");
 				}
+			}
+			if(gain) {
+				gain = false;
+				break;
 			}
 		}
 	}
